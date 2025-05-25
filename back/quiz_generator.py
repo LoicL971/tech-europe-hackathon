@@ -29,20 +29,18 @@ class QuizGenerator:
         Returns:
             str: Brief feedback about the user's answer
         """
-        prompt = f"""Give a one-sentence personalized feedback on the answer. Use "you" and "your" to make it more personal.
-        If the answer is correct, start with encouraging phrases like "Well done!", "Great job!", or "Let's go!" before giving the feedback.
-        If the answer is incorrect or incomplete, start with encouraging phrases like "No worries!", "Keep going!", or "You're getting there!" before explaining what was wrong.
-        Include a precise answer when the user's answer is incorrect or incomplete but explain shortly why the user's answer is wrong. Do not complicate the answer.
-        If the answer is correct but too detailed, suggest how to make it more concise.
-
-        Context:
-        {markdown_text}
-
-        Question: {question}
-        Correct answer: {right_answer}
-        Your answer: {user_answer}
-
-        Keep it to one sentence and make it encouraging. If the answer is wrong, include the correct answer:"""
+        prompt = (
+            'Give a one-sentence personalized feedback on the answer. Use "you" and "your" to make it more personal.\n'
+            'If the answer is correct, start with encouraging phrases like "Well done!", "Great job!", or "Let\'s go!" before giving the feedback.\n'
+            'If the answer is incorrect or incomplete, start with encouraging phrases like "No worries!", "Keep going!", or "You\'re getting there!" before explaining what was wrong.\n'
+            'Include a precise answer when the user\'s answer is incorrect or incomplete but explain shortly why the user\'s answer is wrong. Do not complicate the answer.\n'
+            'If the answer is correct but too detailed, suggest how to make it more concise.\n\n'
+            'Context:\n' + markdown_text + '\n\n'
+            'Question: ' + question + '\n'
+            'Correct answer: ' + right_answer + '\n'
+            'Your answer: ' + user_answer + '\n\n'
+            'Keep it to one sentence and make it encouraging. If the answer is wrong, include the correct answer:'
+        )
 
         messages = [
             {"role": "system", "content": "You are a supportive teacher providing personalized, encouraging feedback on answers. Always include the correct answer when the user's answer is wrong."},
@@ -79,31 +77,27 @@ class QuizGenerator:
         """
         # Create context from previous Q&A and feedback
         qa_context = "\n".join([
-            f"Q: {q}\nA: {a}\nFeedback: {f}"
+            "Q: " + q + "\nA: " + a + "\nFeedback: " + f
             for q, a, f in zip(previous_questions, previous_answers, previous_feedback)
         ])
 
-        prompt = f"""Based on the following context, previous questions/answers, and feedback, generate {num_follow_ups} follow-up questions and answers.
-        The questions should address the specific areas where the user needs improvement based on the feedback.
-        Focus on generating questions that will help the user better understand the concepts they struggled with.
-
-        Original text:
-        {markdown_text}
-
-        Previous Q&A and Feedback:
-        {qa_context}
-
-        Generate follow-up questions and answers that:
-        1. Address specific misconceptions or gaps identified in the feedback
-        2. Build upon the user's previous answers and the feedback given
-        3. Help clarify concepts that were not fully understood
-        4. Are more specific and targeted based on the feedback
-
-        Format the output as a list of strings representing question and answer pair:
-        {{
-            question: [question1, question2, question3, ...]
-            answers: [answer1, answer2, answer3, ...]
-        }}"""
+        prompt = (
+            'Based on the following context, previous questions/answers, and feedback, generate ' + str(num_follow_ups) + ' follow-up questions and answers.\n'
+            'The questions should address the specific areas where the user needs improvement based on the feedback.\n'
+            'Focus on generating questions that will help the user better understand the concepts they struggled with.\n\n'
+            'Original text:\n' + markdown_text + '\n\n'
+            'Previous Q&A and Feedback:\n' + qa_context + '\n\n'
+            'Generate follow-up questions and answers that:\n'
+            '1. Address specific misconceptions or gaps identified in the feedback\n'
+            '2. Build upon the user\'s previous answers and the feedback given\n'
+            '3. Help clarify concepts that were not fully understood\n'
+            '4. Are more specific and targeted based on the feedback\n\n'
+            'Format the output as a list of strings representing question and answer pair:\n'
+            '{\n'
+            '    question: [question1, question2, question3, ...]\n'
+            '    answers: [answer1, answer2, answer3, ...]\n'
+            '}'
+        )
 
         messages = [
             {"role": "system", "content": "You are an educational AI that generates targeted follow-up questions based on previous answers and feedback."},
@@ -138,17 +132,17 @@ class QuizGenerator:
         Returns:
             str: A concise report summarizing the user's performance and areas for improvement
         """
-        prompt = f"""Based on the following questions, answers, and feedback, generate a concise report that:
-        1. Summarizes the user's overall performance
-        2. Identifies 2-3 specific areas where the user needs improvement
-        3. Provides brief, actionable suggestions for improvement
+        qa_summary = "\n".join(["Q: " + q + "\nA: " + a + "\nFeedback: " + f for q, a, f in zip(questions, answers, feedback)])
 
-        Keep the report short and focused on actionable insights.
-
-        Questions and Answers:
-        {chr(10).join([f"Q: {q}\nA: {a}\nFeedback: {f}" for q, a, f in zip(questions, answers, feedback)])}
-
-        Generate a concise report:"""
+        prompt = (
+            'Based on the following questions, answers, and feedback, generate a concise report that:\n'
+            '1. Summarizes the user\'s overall performance\n'
+            '2. Identifies 2-3 specific areas where the user needs improvement\n'
+            '3. Provides brief, actionable suggestions for improvement\n\n'
+            'Keep the report short and focused on actionable insights.\n\n'
+            'Questions and Answers:\n' + qa_summary + '\n\n'
+            'Generate a concise report:'
+        )
 
         messages = [
             {"role": "system", "content": "You are an educational AI that generates concise, actionable performance reports."},
@@ -176,28 +170,26 @@ class QuizGenerator:
             List[Tuple[str, str]]: List of (question, answer) pairs
         """
         # Create a prompt for the AI to generate questions and answers
-        prompt = f"""Based on the following text, generate {num_questions} engaging and fun questions that test understanding of the content.
-        Guidelines for questions:
-        - Make questions interactive and engaging. Add a bit of context to the questions.
-        - Use creative formats like:
-          * "How would you explain..." challenges
-          * "Compare and contrast..." analysis
-          * use "what is..." or "define..." questions
-        - Make questions feel like a conversation rather than a test
-        - Include questions that require critical thinking
-        - Use active and engaging language
-        - Make questions short and concise.
-
-        Format the output as a list of strings representing question and answer pair:
-        {{
-            question: [question1, question2, question3, ...]
-            answers: [answer1, answer2, answer3, ...]
-        }}
-
-        Text:
-        {markdown_text}
-
-        Questions and answer pairs:"""
+        prompt = (
+            'Based on the following text, generate ' + str(num_questions) + ' engaging and fun questions that test understanding of the content.\n'
+            'Guidelines for questions:\n'
+            '- Make questions interactive and engaging. Add a bit of context to the questions.\n'
+            '- Use creative formats like:\n'
+            '  * "How would you explain..." challenges\n'
+            '  * "Compare and contrast..." analysis\n'
+            '  * use "what is..." or "define..." questions\n'
+            '- Make questions feel like a conversation rather than a test\n'
+            '- Include questions that require critical thinking\n'
+            '- Use active and engaging language\n'
+            '- Make questions short and concise.\n\n'
+            'Format the output as a list of strings representing question and answer pair:\n'
+            '{\n'
+            '    question: [question1, question2, question3, ...]\n'
+            '    answers: [answer1, answer2, answer3, ...]\n'
+            '}\n\n'
+            'Text:\n' + markdown_text + '\n\n'
+            'Questions and answer pairs:'
+        )
 
         # Create chat messages
         messages = [
@@ -217,7 +209,7 @@ class QuizGenerator:
         parsed_response = chat_response.choices[0].message.parsed
         questions_list = parsed_response.questions
         answers_list = parsed_response.answers
-        print(f"Generated questions:", questions_list[:num_questions])
+        print("Generated questions:", questions_list[:num_questions])
         return questions_list[:num_questions],answers_list[:num_questions]
 
 api_key = os.environ["MISTRAL_API_KEY"]

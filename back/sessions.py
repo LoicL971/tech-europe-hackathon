@@ -110,11 +110,8 @@ class Session(object):
         if not self.concatenated_docs:
             self.concatenated_docs = ""
             for i, doc in enumerate(self.decoded_docs):
-                self.concatenated_docs += f"""
-Page {i + 1}:
-{doc}
-
-"""
+                page_content = f"Page {i + 1}:\n{doc}\n\n"
+                self.concatenated_docs += page_content
         questions_list, answers_list = self.generator.generate_questions(
             self.concatenated_docs, NUMBER_GENERATED_QUESTION
         )
@@ -135,11 +132,8 @@ Page {i + 1}:
         if not self.concatenated_docs:
             self.concatenated_docs = ""
             for (i, doc) in enumerate(self.decoded_docs):
-                self.concatenated_docs += f"""
-Page {i+1}:
-{doc}
-
-"""
+                page_content = f"Page {i+1}:\n{doc}\n\n"
+                self.concatenated_docs += page_content
 
         # Generate follow-up questions based on previous Q&A and feedback
         questions_list, answers_list = self.generator.generate_follow_up_questions(
@@ -200,8 +194,7 @@ Page {i+1}:
 
     def generate_report(self) -> str:
         return self.generator.generate_report(
-            self.concatenated_docs,
-            [q["question"] for q in self.questions_to_ask],
+            [q["question"] for q in self.answers_with_feedbacks],
             self.previous_answers,
             [a["feedback"] for a in self.answers_with_feedbacks],
         )

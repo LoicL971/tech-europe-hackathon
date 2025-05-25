@@ -1,0 +1,69 @@
+# Git
+.git
+.gitignore
+
+# Environment files (will be passed at runtime)
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Node modules (will be installed during build)
+node_modules
+front/node_modules
+
+# Python cache
+__pycache__
+*.pyc
+*.pyo
+*.pyd
+.Python
+*.so
+.pytest_cache
+
+# Build outputs
+front/.next
+front/out
+front/dist
+
+# Logs
+*.log
+logs
+
+# Runtime data
+pids
+*.pid
+*.seed
+*.pid.lock
+
+# Coverage directory used by tools like istanbul
+coverage
+
+# IDE files
+.vscode
+.idea
+*.swp
+*.swo
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Docker files
+Dockerfile*
+docker-compose*
+.dockerignore
+
+# Documentation
+README.md
+*.md
+
+# Test files
+test-assets/
+*test*
